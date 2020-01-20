@@ -1,0 +1,95 @@
+- name: create openfaas-config folder
+  file:
+    path: '{{ vagrant_home }}/openfaas-config'
+    state: directory
+    mode: 0755
+
+- name: add namespaces for openfaas services 
+  shell:
+    cmd: |
+      cat << EOF > {{ vagrant_home }}/openfaas-config/namespaces.yml
+      ---
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: openfaas
+        labels:
+          role: openfaas-system
+          access: openfaas-system
+          istio-injection: enabled
+      ---
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: openfaas-fn
+        labels:
+          istio-injection: enabled
+          role: openfaas-fn
+      EOF
+      kubectl apply -f {{ vagrant_home }}/openfaas-config/namespaces.yml
+
+- name: add faas-netes helm repo
+  shell: helm repo add openfaas https://openfaas.github.io/faas-netes/
+  args:
+    executable: /bin/bash
+  retries: 10
+
+- name: install openfaas in the cluster
+  shell: |
+    helm repo update
+    helm upgrade openfaas --install --wait openfaas/openfaas \
+    --version {{ openfaas_chart_version }} \
+    --namespace openfaas \
+    --set functionNamespace=openfaas-fn \
+    --set basic_auth=false \
+    --set generateBasicAuth=false \
+    --set gateway.nodePort={{ openfaas_gateway_port }}
+  args:
+    executable: /bin/bash
+  retries: 3
+  delay: 10
+  ignore_errors: yes
+
+- name: install grafana for openfaas
+  shell:
+    cmd: |
+      cat << EOF > {{ vagrant_home }}/openfaas-config/grafana.yml
+      ---
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: grafana
+        labels:
+          run: grafana
+      spec:
+        type: NodePort
+        ports:
+        - port: 3000
+          targetPort: 3000
+          nodePort: 31113
+        selector:
+          run: grafana 
+      ---
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: grafana
+      spec:
+        selector:
+          matchLabels:
+            run: grafana
+        replicas: 1
+        template:
+          metadata:
+            labels:
+              run: grafana
+          spec:
+            containers:
+            - name: grafana
+              image: {{ grafana_image }}
+              ports:
+              - containerPort: 3000
+      EOF
+      kubectl apply -n openfaas -f {{ vagrant_home }}/openfaas-config/grafana.yml
+  args:
+    executable: /bin/bash

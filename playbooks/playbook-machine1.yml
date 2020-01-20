@@ -1,0 +1,37 @@
+---
+- hosts: machine1
+  gather_facts: false
+  pre_tasks:
+    - name: install required packages
+      become: true
+      package:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+      - python-apt
+      - apt-transport-https
+      - gnupg
+      - software-properties-common
+      register: task_result
+      until: task_result is success
+      retries: 3
+      delay: 20
+      changed_when: false
+
+- hosts: machine1
+  vars:
+    machine_host: 'machine1'
+  roles:
+     - { role: docker, become: true }
+     - role: minikube
+       become: true
+       environment:
+         HELM_HOME: '{{ vagrant_home }}/.helm'
+         MINIKUBE_HOME: '{{ vagrant_home }}/.minikube'
+         KUBECONFIG: '{{ vagrant_home }}/.kube/config'
+     - { role: hostname, become: true }
+     - role: openfaas
+       environment:
+         HELM_HOME: '{{ vagrant_home }}/.helm'
+         KUBECONFIG: '{{ vagrant_home }}/.kube/config'

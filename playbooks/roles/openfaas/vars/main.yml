@@ -1,0 +1,4 @@
+---
+openfaas_chart_version: '5.4.1' 
+openfaas_gateway_port: 31112
+grafana_image: 'stefanprodan/faas-grafana:4.6.3'

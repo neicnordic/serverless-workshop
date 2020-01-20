@@ -1,0 +1,15 @@
+---
+apt_packages:
+    - open-iscsi
+    - docker.io
+minikube_binary: 'https://storage.googleapis.com/minikube/releases/v1.6.2/minikube-linux-amd64'
+minikube_checksum: 'sha256:eabd027438953d29a4b0f7b810c801919cc13bef3ebe7aff08c9534ac2b091ab'
+minikube_install_target: '/usr/local/bin/minikube'
+minikube_memory: 4096 
+minikube_cpus: 3
+kubectl_binary: 'https://storage.googleapis.com/kubernetes-release/release/v1.17.1/bin/linux/amd64/kubectl'
+kubectl_install_target: '/usr/local/bin/kubectl'
+helm_binary: 'https://storage.googleapis.com/kubernetes-helm/helm-v2.16.1-linux-amd64.tar.gz'
+helm_checksum: 'sha256:7eebaaa2da4734242bbcdced62cc32ba8c7164a18792c8acdf16c77abffce202'
+helm_install_target: '/usr/local/bin/'
+vagrant_home: '/home/vagrant'

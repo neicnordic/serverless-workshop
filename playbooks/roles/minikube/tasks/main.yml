@@ -1,0 +1,121 @@
+- name: install required packages
+  package:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+  - open-iscsi
+  - socat
+  register: task_result
+  until: task_result is success
+  retries: 3
+  delay: 20
+  changed_when: false
+
+- name: enable service iscsid
+  systemd:
+    name: iscsid 
+    enabled: yes
+    state: started
+
+- name: enable service docker
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: download minikube
+  get_url:
+    url: '{{ minikube_binary }}'
+    dest: '{{ minikube_install_target }}'
+    checksum: '{{ minikube_checksum }}'
+    mode: 0755
+
+- name: download kubectl
+  get_url:
+    url: '{{ kubectl_binary }}'
+    dest: '{{ kubectl_install_target }}'
+    mode: 0755
+
+- name: create .kube folder 
+  file:
+    path: '{{ vagrant_home }}/.kube'
+    state: directory
+    mode: 0755
+
+- name: create config file for kubectl
+  file:
+    path: '{{ vagrant_home }}/.kube/config'
+    state: touch
+    mode: 0755
+
+- name: export k8s env vars
+  shell: |
+    echo 'export MINIKUBE_WANTUPDATENOTIFICATION=false' >> {{ vagrant_home }}/.profile
+    echo 'export MINIKUBE_WANTREPORTERRORPROMPT=false' >> {{ vagrant_home }}/.profile
+    echo 'export MINIKUBE_HOME={{ vagrant_home }}' >> {{ vagrant_home }}/.profile
+    echo 'export HELM_HOME={{ vagrant_home }}/.helm' >> {{ vagrant_home }}/.profile
+    echo 'export CHANGE_MINIKUBE_NONE_USER=true' >> {{ vagrant_home }}/.profile
+    echo 'export KUBECONFIG={{ vagrant_home }}/.kube/config' >> {{ vagrant_home }}/.profile
+
+- name: start minikube with option vm-driver=none
+  shell: minikube start --vm-driver=none --memory {{ minikube_memory }} --cpus {{ minikube_cpus }}
+
+- name: check minikube is up and running
+  shell: minikube status
+  args:
+    executable: /bin/bash
+  register: minikube_status
+  until: "'minikube' and 'Running' in minikube_status.stdout"
+  delay: 30
+  retries: 10
+
+- name: download helm
+  get_url:
+    url: '{{ helm_binary }}'
+    dest: '/tmp/helm.tar.gz'
+    mode: 0755
+    checksum: '{{ helm_checksum }}'
+
+- name: unarchive helm
+  unarchive:
+    src: '/tmp/helm.tar.gz'
+    remote_src: true
+    dest: '/tmp'
+    mode: 0755
+
+- name: copy helm binary
+  copy:
+    src: /tmp/linux-amd64/helm
+    dest: '{{ helm_install_target }}'
+    mode: 0755
+    remote_src: yes
+
+- name: recursively change permissions of k8s folders 
+  file:
+    path: '{{ vagrant_home }}/{{ item }}'
+    state: directory
+    mode: 0777
+    recurse: yes
+  with_items:
+  - .minikube
+  - .kube
+
+- name: start tiller
+  shell: helm init --wait
+  args:
+    executable: /bin/bash
+  retries: 5
+  delay: 10
+  ignore_errors: yes
+
+- name: recursively change permissions of .helm 
+  file:
+    path: '{{ vagrant_home }}/.helm'
+    state: directory
+    recurse: yes
+    mode: 0777

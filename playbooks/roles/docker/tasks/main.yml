@@ -1,0 +1,62 @@
+---
+- name: gather the package facts
+  package_facts:
+    manager: auto
+
+- name: add docker gpg key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+ 
+- name: add docker gpg repository
+  apt_repository:
+    repo: "{{ docker_repo }}"
+    filename: docker-ce
+    state: present
+  when: "'docker-ce' not in ansible_facts.packages"
+
+- name: update apt cache
+  package:
+    update_cache: yes
+  when: "'docker-ce' not in ansible_facts.packages"
+  register: task_result
+  retries: 3
+  delay: 20
+
+- name: get docker package names
+  shell: |
+    set -o pipefail
+    apt-cache madison docker-ce | grep {{ docker_version }} | head -n 1 | cut -d ' ' -f 4
+  args:
+    executable: /bin/bash
+  register: command_output
+  changed_when: false
+
+- name: set docker_name
+  set_fact:
+    docker_name: "{{ command_output.stdout }}"
+
+- name: install docker
+  package:
+    name: [ 'docker-ce={{ docker_name }}', 'docker-ce-cli={{ docker_name }}' ]
+    state: present
+    update_cache: yes
+  when: "'docker-ce' not in ansible_facts.packages"
+  register: task_result
+  retries: 3
+  delay: 20
+
+- name: ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+
+- name: add our login user to docker group
+  user:
+    name: "vagrant"
+    groups: docker
+    append: yes
+
+- name: prevent docker from being updated
+  command: apt-mark hold docker-ce docker-ce-cli
+  changed_when: false
