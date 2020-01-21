@@ -4,7 +4,39 @@
     state: directory
     mode: 0755
 
-- name: add namespaces for openfaas services 
+- name: get faas-cli installer
+  get_url:
+    url: https://cli.openfaas.com
+    dest: '{{ vagrant_home }}/openfaas-config/cli.sh'
+
+- name: change permissions of installer
+  file:
+    path: '{{ vagrant_home }}/openfaas-config/cli.sh'
+    state: file
+    mode: 0777
+
+- name: install faas-cli
+  shell: '{{ vagrant_home }}/openfaas-config/cli.sh'
+  args:
+    executable: /bin/bash
+
+- name: copy faas-cli binary
+  become: true
+  copy:
+    src: '{{ vagrant_home }}/faas-cli'
+    dest: '{{ faas_cli_install_target }}'
+    mode: 0755
+    remote_src: yes
+
+- name: remove unnecessary files
+  file:
+    path: '{{ vagrant_home }}/{{ item }}'
+    state: absent
+  with_items:
+    - faas-cli
+    - openfaas-config/cli.sh
+
+- name: add namespaces for openfaas services
   shell:
     cmd: |
       cat << EOF > {{ vagrant_home }}/openfaas-config/namespaces.yml
@@ -34,21 +66,36 @@
     executable: /bin/bash
   retries: 10
 
+- name: update helm repo
+  shell: helm repo update
+  args:
+    executable: /bin/bash
+  retries: 10
+
+- name: check openfaas release status
+  shell: "helm ls --all openfaas | awk -F '\t' 'FNR > 1 { if ($1 == \"openfaas\") print $4; else print \"absent\"; }'"
+  args:
+    executable: /bin/bash
+  retries: 10
+  register: release_status
+
+- debug:
+    msg: "{{ release_status }}"
+
 - name: install openfaas in the cluster
   shell: |
-    helm repo update
-    helm upgrade openfaas --install --wait openfaas/openfaas \
-    --version {{ openfaas_chart_version }} \
-    --namespace openfaas \
-    --set functionNamespace=openfaas-fn \
-    --set basic_auth=false \
-    --set generateBasicAuth=false \
-    --set gateway.nodePort={{ openfaas_gateway_port }}
+      helm upgrade --install openfaas --wait openfaas/openfaas \
+      --version {{ openfaas_chart_version }} \
+      --namespace openfaas \
+      --set functionNamespace=openfaas-fn \
+      --set basic_auth=false \
+      --set generateBasicAuth=false \
+      --set gateway.nodePort={{ openfaas_gateway_port }}
   args:
     executable: /bin/bash
   retries: 3
   delay: 10
-  ignore_errors: yes
+  when: 'release_status == "absent"'
 
 - name: install grafana for openfaas
   shell:
@@ -66,9 +113,9 @@
         ports:
         - port: 3000
           targetPort: 3000
-          nodePort: 31113
+          nodePort: {{ grafana_node_port }}
         selector:
-          run: grafana 
+          run: grafana
       ---
       apiVersion: apps/v1
       kind: Deployment
