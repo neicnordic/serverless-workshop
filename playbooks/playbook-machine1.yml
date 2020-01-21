@@ -10,6 +10,8 @@
         update_cache: yes
       with_items:
       - python-apt
+      - curl
+      - vim
       - apt-transport-https
       - gnupg
       - software-properties-common

@@ -1,5 +1,6 @@
 ---
 openfaas_chart_version: '5.4.1' 
 openfaas_gateway_port: 31112
+faas_cli_install_target: '/usr/local/bin/faas-cli'
 grafana_image: 'novella/openfaas-grafana:stable'
 grafana_node_port: 31113

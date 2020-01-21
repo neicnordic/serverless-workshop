@@ -4,6 +4,35 @@
     state: directory
     mode: 0755
 
+- name: get faas-cli installer
+  get_url:
+    url: https://cli.openfaas.com
+    dest: '{{ vagrant_home }}/openfaas-config/cli.sh'
+
+- name: change permissions of installer
+  file:
+    path: '{{ vagrant_home }}/openfaas-config/cli.sh'
+    state: file
+    mode: 0777
+
+- name: install faas-cli
+  shell: '{{ vagrant_home }}/openfaas-config/cli.sh'
+  args:
+    executable: /bin/bash
+
+- name: copy faas-cli binary
+  become: true
+  copy:
+    src: '{{ vagrant_home }}/faas-cli'
+    dest: '{{ faas_cli_install_target }}'
+    mode: 0755
+    remote_src: yes
+
+- name: remove old binary
+  file:
+    path: '{{ vagrant_home }}/faas-cli'
+    state: absent
+
 - name: add namespaces for openfaas services
   shell:
     cmd: |
