@@ -4,7 +4,7 @@
     state: directory
     mode: 0755
 
-- name: add namespaces for openfaas services 
+- name: add namespaces for openfaas services
   shell:
     cmd: |
       cat << EOF > {{ vagrant_home }}/openfaas-config/namespaces.yml
@@ -66,9 +66,9 @@
         ports:
         - port: 3000
           targetPort: 3000
-          nodePort: 31113
+          nodePort: {{ grafana_node_port }}
         selector:
-          run: grafana 
+          run: grafana
       ---
       apiVersion: apps/v1
       kind: Deployment
