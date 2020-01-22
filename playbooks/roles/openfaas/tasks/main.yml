@@ -73,7 +73,7 @@
   retries: 10
 
 - name: check openfaas release status
-  shell: "helm ls --all openfaas | awk -F '\t' 'FNR > 1 { if ($1 == \"openfaas\") print $4; else print \"absent\"; }'"
+  shell: helm ls --all -n openfaas | awk -F '\t' 'FNR > 1 { if ( $1 == "openfaas" && $4 == "DEPLOYED" ) print "present"; else print "absent"; }'
   args:
     executable: /bin/bash
   retries: 10
@@ -90,12 +90,14 @@
       --set functionNamespace=openfaas-fn \
       --set basic_auth=false \
       --set generateBasicAuth=false \
-      --set gateway.nodePort={{ openfaas_gateway_port }}
+      --set gateway.nodePort={{ openfaas_gateway_port }} \
+      --set operator.create=true
   args:
     executable: /bin/bash
   retries: 3
   delay: 10
-  when: 'release_status == "absent"'
+  when: (release_status.stdout == "absent") or
+        (release_status.stdout == "" and release_status.stderr == "")
 
 - name: install grafana for openfaas
   shell:

@@ -105,14 +105,6 @@
   - .minikube
   - .kube
 
-- name: start tiller
-  shell: helm init --wait
-  args:
-    executable: /bin/bash
-  retries: 5
-  delay: 10
-  ignore_errors: yes
-
 - name: recursively change permissions of .helm 
   file:
     path: '{{ vagrant_home }}/.helm'
