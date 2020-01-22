@@ -9,7 +9,7 @@ minikube_memory: 4096
 minikube_cpus: 3
 kubectl_binary: 'https://storage.googleapis.com/kubernetes-release/release/v1.17.1/bin/linux/amd64/kubectl'
 kubectl_install_target: '/usr/local/bin/kubectl'
-helm_binary: 'https://storage.googleapis.com/kubernetes-helm/helm-v2.16.1-linux-amd64.tar.gz'
-helm_checksum: 'sha256:7eebaaa2da4734242bbcdced62cc32ba8c7164a18792c8acdf16c77abffce202'
+helm_binary: 'https://get.helm.sh/helm-v3.0.2-linux-amd64.tar.gz'
+helm_checksum: 'sha256:c6b7aa7e4ffc66e8abb4be328f71d48c643cb8f398d95c74d075cfb348710e1d'
 helm_install_target: '/usr/local/bin/'
 vagrant_home: '/home/vagrant'
