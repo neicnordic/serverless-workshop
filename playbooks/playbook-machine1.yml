@@ -1,6 +1,8 @@
 ---
 - hosts: machine1
   gather_facts: false
+  vars:
+    hey_install_target: "/usr/local/bin/hey"
   pre_tasks:
     - name: install required packages
       become: true
@@ -9,9 +11,10 @@
         state: present
         update_cache: yes
       with_items:
-      - python-apt
       - curl
       - vim
+      - jq
+      - python-apt
       - apt-transport-https
       - gnupg
       - software-properties-common
@@ -20,6 +23,19 @@
       retries: 3
       delay: 20
       changed_when: false
+
+    - name: install hey
+      become: true
+      get_url:
+        url: https://storage.googleapis.com/hey-release/hey_linux_amd64
+        dest: '{{ hey_install_target }}'
+
+    - name: change permissions of installer
+      become: true
+      file:
+        path: '{{ hey_install_target }}'
+        state: file
+        mode: 0755
 
 - hosts: machine1
   vars:
