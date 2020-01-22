@@ -16,7 +16,7 @@
     mode: 0777
 
 - name: install faas-cli
-  shell: '{{ vagrant_home }}/openfaas-config/cli.sh'
+  shell: '{{ vagrant_home }}/openfaas-config/cli.sh > {{ vagrant_home }}/faas-cli'
   args:
     executable: /bin/bash
 
