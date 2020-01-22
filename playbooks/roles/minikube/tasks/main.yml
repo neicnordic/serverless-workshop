@@ -58,7 +58,6 @@
     echo 'export MINIKUBE_WANTUPDATENOTIFICATION=false' >> {{ vagrant_home }}/.profile
     echo 'export MINIKUBE_WANTREPORTERRORPROMPT=false' >> {{ vagrant_home }}/.profile
     echo 'export MINIKUBE_HOME={{ vagrant_home }}' >> {{ vagrant_home }}/.profile
-    echo 'export HELM_HOME={{ vagrant_home }}/.helm' >> {{ vagrant_home }}/.profile
     echo 'export CHANGE_MINIKUBE_NONE_USER=true' >> {{ vagrant_home }}/.profile
     echo 'export KUBECONFIG={{ vagrant_home }}/.kube/config' >> {{ vagrant_home }}/.profile
 
@@ -104,10 +103,3 @@
   with_items:
   - .minikube
   - .kube
-
-- name: recursively change permissions of .helm 
-  file:
-    path: '{{ vagrant_home }}/.helm'
-    state: directory
-    recurse: yes
-    mode: 0777

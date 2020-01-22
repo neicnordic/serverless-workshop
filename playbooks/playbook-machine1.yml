@@ -45,11 +45,9 @@
      - role: minikube
        become: true
        environment:
-         HELM_HOME: '{{ vagrant_home }}/.helm'
          MINIKUBE_HOME: '{{ vagrant_home }}/.minikube'
          KUBECONFIG: '{{ vagrant_home }}/.kube/config'
      - { role: hostname, become: true }
      - role: openfaas
        environment:
-         HELM_HOME: '{{ vagrant_home }}/.helm'
          KUBECONFIG: '{{ vagrant_home }}/.kube/config'
