@@ -62,7 +62,7 @@
     echo 'export KUBECONFIG={{ vagrant_home }}/.kube/config' >> {{ vagrant_home }}/.profile
 
 - name: start minikube with option vm-driver=none
-  shell: minikube start --vm-driver=none --memory {{ minikube_memory }} --cpus {{ minikube_cpus }}
+  shell: minikube start --vm-driver=none
 
 - name: check minikube is up and running
   shell: minikube status
