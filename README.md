@@ -35,15 +35,15 @@ After cloning this repository, open your favourite shell and navigate to the fol
 
 > **Note:** Vagrant will request to allocate 3 cpus and 4GB of memory for the machine.
 
-Once it is done, you can ssh into the machine:
+Once it is done, verify that you can ssh into the machine:
 
 ```bash
 > vagrant ssh
 ```
 
-> **Note:** Make sure that the OpenFaaS dashboard and Grafana by opening a web browser and navigating to [127.0.0.1:31112](127.0.0.1:31112) and [127.0.0.1:31113](127.0.0.1:31113) respectively.
+Make sure that the OpenFaaS dashboard and Grafana by opening a web browser and navigating to [http://127.0.0.1:31112](127.0.0.1:31112) and [http://127.0.0.1:31113](127.0.0.1:31113) respectively.
 
-If you need to destroy your machine use:
+After you have finished the tutorial, you may destroy the virtual machine using:
 ```bash
 > vagrant destroy
 ```
