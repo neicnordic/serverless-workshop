@@ -7,4 +7,4 @@
     line: '{{ item }}'
     state: present
   with_items:
-    - '10.0.0.2 machine1'
+    - '10.0.0.2 imnoserver'
