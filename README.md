@@ -41,7 +41,7 @@ Once it is done, verify that you can ssh into the machine:
 > vagrant ssh
 ```
 
-Make sure that the OpenFaaS dashboard and Grafana by opening a web browser and navigating to [http://127.0.0.1:31112](127.0.0.1:31112) and [http://127.0.0.1:31113](127.0.0.1:31113) respectively.
+Make sure that the OpenFaaS dashboard and Grafana by opening a web browser and navigating to http://127.0.0.1:31112 and http://127.0.0.1:31113 respectively.
 
 After you have finished the tutorial, you may destroy the virtual machine using:
 ```bash
