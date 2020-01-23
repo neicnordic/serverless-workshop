@@ -20,8 +20,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                   vb.cpus = 3
           end
           imnoserver.vm.provider "libvirt" do |libvirt|
-            libvirt.cpus = 3
-            libvirt.memory = 4096
+                  libvirt.cpus = 3
+                  libvirt.memory = 4096
           end
           imnoserver.vm.network "private_network", ip: "10.0.0.2"
           imnoserver.vm.network "forwarded_port", guest: 31112, host: 31112, auto_correct: true

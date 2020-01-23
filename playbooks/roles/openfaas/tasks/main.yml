@@ -21,6 +21,10 @@
   args:
     executable: /bin/bash
 
+- name: export openfaas url env var
+  shell: |
+    echo 'export OPENFAAS_URL=http://127.0.0.1:31112' >> {{ vagrant_home }}/.profile
+
 - name: remove unnecessary files
   file:
     path: '{{ vagrant_home }}/{{ item }}'
