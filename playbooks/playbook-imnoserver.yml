@@ -1,5 +1,5 @@
 ---
-- hosts: machine1
+- hosts: imnoserver
   gather_facts: false
   vars:
     hey_install_target: "/usr/local/bin/hey"
@@ -37,9 +37,9 @@
         state: file
         mode: 0755
 
-- hosts: machine1
+- hosts: imnoserver
   vars:
-    machine_host: 'machine1'
+    machine_host: 'imnoserver'
   roles:
      - { role: docker, become: true }
      - role: minikube

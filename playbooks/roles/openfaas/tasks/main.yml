@@ -16,24 +16,16 @@
     mode: 0777
 
 - name: install faas-cli
-  shell: '{{ vagrant_home }}/openfaas-config/cli.sh > {{ vagrant_home }}/faas-cli'
+  shell: '{{ vagrant_home }}/openfaas-config/cli.sh'
+  become: true
   args:
     executable: /bin/bash
-
-- name: copy faas-cli binary
-  become: true
-  copy:
-    src: '{{ vagrant_home }}/faas-cli'
-    dest: '{{ faas_cli_install_target }}'
-    mode: 0755
-    remote_src: yes
 
 - name: remove unnecessary files
   file:
     path: '{{ vagrant_home }}/{{ item }}'
     state: absent
   with_items:
-    - faas-cli
     - openfaas-config/cli.sh
 
 - name: add namespaces for openfaas services
@@ -47,15 +39,12 @@
         name: openfaas
         labels:
           role: openfaas-system
-          access: openfaas-system
-          istio-injection: enabled
       ---
       apiVersion: v1
       kind: Namespace
       metadata:
         name: openfaas-fn
         labels:
-          istio-injection: enabled
           role: openfaas-fn
       EOF
       kubectl apply -f {{ vagrant_home }}/openfaas-config/namespaces.yml
@@ -89,9 +78,10 @@
       --namespace openfaas \
       --set functionNamespace=openfaas-fn \
       --set basic_auth=false \
+      --set faasnetes.imagePullPolicy=IfNotPresent \
+      --set openfaasImagePullPolicy=IfNotPresent \
       --set generateBasicAuth=false \
-      --set gateway.nodePort={{ openfaas_gateway_port }} \
-      --set operator.create=true
+      --set gateway.nodePort={{ openfaas_gateway_port }}
   args:
     executable: /bin/bash
   retries: 3
