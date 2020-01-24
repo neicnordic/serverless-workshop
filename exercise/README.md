@@ -54,7 +54,7 @@ faas template pull [mytemplate]
 Here we will demonstrate how to create a Python function, but you can decide to try something else.
 
 ```sh
-$ faas-cli new --lang python3 myfunction
+faas-cli new --lang python3 myfunction
 ```
 This will create three files and a directory:
 
