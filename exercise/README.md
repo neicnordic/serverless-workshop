@@ -130,7 +130,7 @@ This function will just return a sequence of characters, so it's indeed an `echo
 In order to build the function, you might run:
 
 ```sh
-$ faas build -f ./myfunction.yml [--shrinkwrap]
+faas build -f ./myfunction.yml [--shrinkwrap]
 ```
 > **Note:** It is possible to understand how faas builds a function by exploring the build folder if you employ the `shrinkwrap` flag.
 
@@ -138,7 +138,11 @@ To deploy it to Kubernetes you might run:
 
 ```sh
 faas deploy -f ./myfunction.yml
-# Make sure everything goes fine. By default all functions will be located at the openfaas-fn namespace.
+```
+
+Make sure everything goes fine. By default all functions will be located at the openfaas-fn namespace.
+
+```sh
 watch -n 5 kubectl get pods -n openfaas-fn
 ```
 
