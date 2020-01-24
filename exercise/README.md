@@ -146,6 +146,12 @@ Make sure everything goes fine. By default all functions will be located at the 
 watch -n 5 kubectl get pods -n openfaas-fn
 ```
 
+This is the standard way for interacting with functions. The function URL follows:
+
+```
+[https://gateway_URL:port/function/function_name]
+```
+
 ### Invoking functions asynchronously or synchronously?
 
 When you call a function synchronously a connection is made to the  OpenFaaS gateway and is held open for the whole execution time. Synchronous calls are *blocking* so your shell will pause and become inactive until the function has finished. 
@@ -189,3 +195,21 @@ What did you observe? The first example should have taken ~50 seconds whereas th
 ```
 kubectl logs deployment/queue-worker -n openfaas`
 ```
+
+### Autoscaling function-based workloads
+
+Auto-scaling in OpenFaaS allows a function to scale up or down depending on demand represented by different metrics. Read a bit about how autoscaling works in the following page: https://docs.openfaas.com/architecture/autoscaling/.
+
+OpenFaaS will automatically scale based upon the request per seconds metric as measured through Prometheus. This measure is captured as traffic passes through the API Gateway. If the defined threshold for request per seconds is exceeded an alert will be fired. You can control the minimum amount of replicas for function by setting com.openfaas.scale.min, the default value is currently 1. You can control the maximum amount of replicas that can spawn for a function by setting com.openfaas.scale.max, the default value is currently 20.
+
+Here we will show you how to trigger the autoscaling of functions by using the `hey`
+ load testing tool. Run the following command against your function and observe the number of replicas of your function in the Grafana dashboard. What happened?
+ 
+ ```bash
+ hey -z=40s -q 7 -c 2 -m POST -d=asdasd http://127.0.0.1:8080/function/myfunction
+ ```
+ The above simulates two active users `-c` at 5 requests per second `-q` over a duration `-z` of 40 seconds.
+ 
+ You may also want to try to scale your function from 0. If you scale down your function to 0 replicas, you can still invoke it later. Note that this will trigger a cold start, instead of a warm start, which is slower.
+ 
+ It is important to note that there is a difference between applying a scientific method and tooling to a controlled environment and running a Denial Of Service attack on your own laptop. This is not representative of a production deployment.
