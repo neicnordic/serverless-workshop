@@ -88,6 +88,8 @@ functions:
       com.openfaas.scale.max: "10"
       com.openfaas.scale.factor: "2"
       com.openfaas.scale.zero: true
+      com.openfaas.health.http.path: "/healthz"
+      com.openfaas.health.http.initialDelay: "30s"
     environment:
       read_timeout: 20s
       write_timeout: 20s
@@ -110,7 +112,7 @@ functions:
 * The Docker image name to be used is under the field `image`.
 * Function annotations for autoscaling, environmental variables, the function's process and secrets can also be configured.
 
-Here is the contents of a minimal `handler.py` file:
+Here are the contents of a minimal `handler.py` file:
 
 ```python
 def handle(req):
@@ -119,7 +121,23 @@ def handle(req):
         req (str): request body
     """
 
-    return req
+    return "Hello Geilo!"
 ```
 
-This function will just return the input, so it's indeed an `echo` function. Any values returned to stdout will subsequently be returned to the calling program.
+This function will just return a sequence of characters, so it's indeed an `echo` function. Any values returned to stdout will subsequently be returned to the calling program. Should you want to add more packages, update the `requirements.txt` file. On Kubernetes is possible to run any container image as an OpenFaaS function as long as your application exposes port 8080 and has a HTTP health check endpoint.
+
+In order to build the function, you might run:
+
+```sh
+$ faas build -f ./myfunction.yml [--shrinkwrap]
+```
+> **Note:** It is possible to understand how faas builds a function by exploring the build folder if you employ the `shrinkwrap` flag.
+
+To deploy it to Kubernetes you might run:
+
+```sh
+faas deploy -f ./myfunction.yml
+# Make sure everything goes fine. By default all functions will be located at the openfaas-fn namespace.
+watch -n 5 kubectl get pods -n openfaas-fn
+```
+
