@@ -54,7 +54,7 @@ faas template pull [mytemplate]
 Here we will demonstrate how to create a Python function, but you can decide to try something else.
 
 ```sh
-faas-cli new --lang python3 myfunction
+faas new --lang python3 myfunction
 ```
 This will create three files and a directory:
 
@@ -171,21 +171,21 @@ Asynchronous function calls are preferrable for tasks where you can defer the ex
 Let's create a function with its`fprocess` to `sleep 10`. Now build, deploy and invoke your function 5 times synchronously by running:
 
 ```
-echo -n "" | faas-cli invoke long-task
-echo -n "" | faas-cli invoke long-task
-echo -n "" | faas-cli invoke long-task
-echo -n "" | faas-cli invoke long-task
-echo -n "" | faas-cli invoke long-task
+echo -n "" | faas invoke long-task
+echo -n "" | faas invoke long-task
+echo -n "" | faas invoke long-task
+echo -n "" | faas invoke long-task
+echo -n "" | faas invoke long-task
 ```
 
 Then invoke the function 5 times asynchronously:
 
 ```
-echo -n "" | faas-cli invoke long-task --async
-echo -n "" | faas-cli invoke long-task --async
-echo -n "" | faas-cli invoke long-task --async
-echo -n "" | faas-cli invoke long-task --async
-echo -n "" | faas-cli invoke long-task --async
+echo -n "" | faas invoke long-task --async
+echo -n "" | faas invoke long-task --async
+echo -n "" | faas invoke long-task --async
+echo -n "" | faas invoke long-task --async
+echo -n "" | faas invoke long-task --async
 ```
 
 What did you observe? The first example should have taken ~50 seconds whereas the second example would have returned to your prompt straightaway. The work will still take similar time to complete, but that is now going to be placed on a queue for deferred execution. The default stack for OpenFaaS uses NATS Streaming for queueing and deferred execution. It is possible to view the logs with the following command:
