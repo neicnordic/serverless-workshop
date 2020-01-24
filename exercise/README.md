@@ -146,3 +146,46 @@ Make sure everything goes fine. By default all functions will be located at the 
 watch -n 5 kubectl get pods -n openfaas-fn
 ```
 
+### Invoking functions asynchronously or synchronously?
+
+When you call a function synchronously a connection is made to the  OpenFaaS gateway and is held open for the whole execution time. Synchronous calls are *blocking* so your shell will pause and become inactive until the function has finished. 
+
+* The gateway uses a route of: `/function/<function_name>`
+* You have to wait until it has finished
+* You get the result after the call
+* You know if it passed or failed
+
+Asynchronous tasks are slightly different: 
+
+* The gateway uses a different route: `/async-function/<function_name>`
+* The client gets an immediate response of *202 Accepted* from the gateway
+* The function is invoked later using a queue-worker
+* By default the result is discarded
+
+Asynchronous function calls are preferrable for tasks where you can defer the execution until a later time, or you don't need the result on the client.
+
+let's create a function with its`fprocess` to `sleep 10`. Now build, deploy and invoke your function 5 times synchronously by running:
+
+```
+echo -n "" | faas-cli invoke long-task
+echo -n "" | faas-cli invoke long-task
+echo -n "" | faas-cli invoke long-task
+echo -n "" | faas-cli invoke long-task
+echo -n "" | faas-cli invoke long-task
+```
+
+Then invoke the function 5 times asynchronously:
+
+```
+echo -n "" | faas-cli invoke long-task --async
+echo -n "" | faas-cli invoke long-task --async
+echo -n "" | faas-cli invoke long-task --async
+echo -n "" | faas-cli invoke long-task --async
+echo -n "" | faas-cli invoke long-task --async
+```
+
+What did you observe? The first example should have taken ~50 seconds whereas the second example would have returned to your prompt straightaway. The work will still take similar time to complete, but that is now going to be placed on a queue for deferred execution. The default stack for OpenFaaS uses NATS Streaming for queueing and deferred execution. It is possible to view the logs with the following command:
+
+```
+kubectl logs deployment/queue-worker -n openfaas`
+```
