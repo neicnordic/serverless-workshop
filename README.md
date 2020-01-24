@@ -9,7 +9,7 @@ In Windows:
 
 - Install Chocolate: https://chocolatey.org/install
 - Install Vagrant: https://www.vagrantup.com/downloads.html
-- Install VirtualBox: https://www.virtualbox.org/wiki/Downloads
+- Install VirtualBox v6.0: https://www.virtualbox.org/wiki/Downloads
 
 - Open PowerShell and run: 
 
@@ -22,7 +22,7 @@ In Mac & Linux:
 You should be able to download the installation files for your operating system:
 
 - Install Vagrant: https://www.vagrantup.com/downloads.html
-- Install VirtualBox: https://www.virtualbox.org/wiki/Downloads
+- Install VirtualBox v6.0: https://www.virtualbox.org/wiki/Downloads
 
 > **Note:** It is also possible to use libvirt, but we encourage you to use virtualbox for this tutorial.
 
