@@ -93,6 +93,7 @@ functions:
     environment:
       read_timeout: 20s
       write_timeout: 20s
+      write_debug: false
     limits:
       cpu: 100m
     requests:
