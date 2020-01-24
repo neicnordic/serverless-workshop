@@ -53,8 +53,6 @@ faas template pull [mytemplate]
 
 Here we will demonstrate how to create a Python function, but you can decide to try something else.
 
-* Scaffold the function
-
 ```sh
 $ faas-cli new --lang python3 myfunction
 ```
