@@ -49,7 +49,7 @@ Take a look at all available templates from https://github.com/openfaas/template
 faas template store ls
 ```
 
-Make sure you pull the template you want from the store:
+Pull a template of your choice from the store:
 
 ```sh
 faas template pull [mytemplate]
@@ -127,7 +127,7 @@ def handle(req):
     return "Hello Geilo!"
 ```
 
-This function will just return a sequence of characters, so it's indeed an `echo` function. Any values returned to stdout will subsequently be returned to the calling program. Should you want to add more packages, update the `requirements.txt` file. On Kubernetes is possible to run any container image as an OpenFaaS function as long as your application exposes port 8080 and has a HTTP health check endpoint.
+This function will just return a sequence of characters, so it's indeed an `echo` function. Any values returned to stdout will subsequently be returned to the calling program. Should you want to add more packages, update the `requirements.txt` file. On Kubernetes it is possible to run any container image as an OpenFaaS function as long as your application exposes port 8080 and has a HTTP health check endpoint.
 
 ### Building a function and understanding the watchdog
 
@@ -137,7 +137,7 @@ In order to build the function, you might run:
 faas build -f ./myfunction.yml [--shrinkwrap]
 ```
 
-It is possible to understand how faas builds a function by exploring the build folder if you employ the dry run `shrinkwrap` flag. This will not build the function, but instead put in the build folder all building blocks of your function, including the watchdog definition. The classic Watchdog forks one process per request giving the highest level of portability, but the newer version enables a http mode where that same process can be re-used repeatedly to offset the latency of forking. Below you can find a conceptual diagram of an invocation of the Watchdog:
+It is possible to understand how faas builds a function by exploring the "build" folder if you employ the dry run `shrinkwrap` flag. This will not build the function, but instead put in the "build" folder all building blocks of your function, including the watchdog definition. The classic Watchdog forks one process per request giving the highest level of portability, but the newer version enables a http mode where that same process can be re-used repeatedly to offset the latency of forking. Below you can find a conceptual diagram of an invocation of the Watchdog:
 
 ![alt text](https://raw.githubusercontent.com/neicnordic/serverless-workshop/master/exercise/watchdog.jpg)
 
