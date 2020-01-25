@@ -95,6 +95,7 @@ functions:
     environment:
       read_timeout: 20s
       write_timeout: 20s
+      exec_timeout: 40s
       write_debug: false
     limits:
       cpu: 100m
@@ -181,7 +182,10 @@ Asynchronous tasks are slightly different:
 
 Asynchronous function calls are preferrable for tasks where you can defer the execution until a later time, or you don't need the result on the client.
 
-Let's create a function called `long-task` with its`fprocess` (function process) to `sleep 10`. Setting this variable with the function you want to run for each request. After deploying it successfully, invoke it 5 times synchronously by running:
+Let's create a function called `long-task` with its`fprocess` (function process) to `sleep 10`. Setting this variable with the function you want to run for each request. Be careful when choosing the `exec_timeout` - the maximum duration a function can run before being terminated, as you might see it terminate without returning a message.
+
+
+After deploying it successfully, invoke it 5 times synchronously by running:
 
 ```
 echo -n "" | faas invoke long-task
