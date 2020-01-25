@@ -181,7 +181,7 @@ Asynchronous tasks are slightly different:
 
 Asynchronous function calls are preferrable for tasks where you can defer the execution until a later time, or you don't need the result on the client.
 
-Let's create a function with its`fprocess` to `sleep 10`. Now build, deploy and invoke your function 5 times synchronously by running:
+Let's create a function called `long-task` with its`fprocess` to `sleep 10`. After deploying it successfully, invoke it 5 times synchronously by running:
 
 ```
 echo -n "" | faas invoke long-task
