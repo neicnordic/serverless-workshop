@@ -10,7 +10,7 @@ Four different panels are displayed, containing information about:
 * The per-second rate of invocation as measured over the previous X seconds.
 * The total function replicas.
 * The total number of successful function invocations.
-* The average function execution time, as measure over the previous X seconds.
+* The average function execution time, as measured over the previous X seconds.
 
 ## Using the OpenFaaS API
 
@@ -69,7 +69,7 @@ This will create three files and a directory:
 ./myfunction/requirements.txt
 ```
 
-The YAML (.yml) file is used to configure the CLI for building, pushing and deploying your function. In this case, we will only build the work with the images locally, as network resources might be limited.
+The YAML (.yml) file is used to configure the CLI for building, pushing and deploying your function. In this case, we will work with the images locally, as network resources might be limited.
 
 You can learn more about the function configuration here: https://github.com/openfaas/faas-cli/blob/30b7cec9634c708679cf5b4d2884cf597b431401/stack/schema.go#L14 and https://docs.openfaas.com/reference/yaml/.
 
