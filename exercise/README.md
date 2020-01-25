@@ -93,6 +93,7 @@ functions:
       com.openfaas.health.http.path: "/healthz"
       com.openfaas.health.http.initialDelay: "30s"
     environment:
+      fprocess: "python index.py"
       read_timeout: 20s
       write_timeout: 20s
       exec_timeout: 40s
@@ -101,7 +102,6 @@ functions:
       cpu: 100m
     requests:
       cpu: 100m
-    fprocess: "python index.py"
     environment_file:
       - env.yml
     secrets:
