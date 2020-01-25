@@ -14,7 +14,11 @@ Four different panels are displayed, containing information about:
 
 ## Using the OpenFaaS API
 
-faas-netes is an OpenFaaS provider which enables Kubernetes for OpenFaaS. In this tutorial, we will use the CLI in order to communicate with the provider.
+faas-netes is an OpenFaaS provider which enables Kubernetes for OpenFaaS. Take a look below at a conceptual diagram of the components involved in a typical workflow using OpenFaaS.
+
+![alt text](https://raw.githubusercontent.com/neicnordic/serverless-workshop/master/exercise/of-workflow.png)
+
+In this tutorial, we will use the CLI in order to communicate with the provider. It can also be accessed through its REST API, or through the UI you tested before. Prometheus collects metrics which are available via the faas-netes API for auto-scaling purposes. By changing the URL for a function from /function/NAME to /async-function/NAME an invocation can be run in a queue using NATS Streaming.
 
 ### CLI basics
 
