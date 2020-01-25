@@ -182,8 +182,7 @@ Asynchronous tasks are slightly different:
 
 Asynchronous function calls are preferrable for tasks where you can defer the execution until a later time, or you don't need the result on the client.
 
-Let's create a function called `long-task` with its`fprocess` (function process) to `sleep 10`. Setting this variable with the function you want to run for each request. Be careful when choosing the `exec_timeout` - the maximum duration a function can run before being terminated, as you might see it terminate without returning a message.
-
+Let's create a function called `long-task` with its`fprocess` (function process) to `sleep 10`. Setting this variable changes the binary you want to run for each request. You can also accomplish the same behaviour by simply making your function handler sleep. Be careful when choosing the `write_timeout`. This parameter defines the HTTP timeout for writing a response body from your function. This is importsnt, as you might see it terminate prematurely and thus unsuccessfully.
 
 After deploying it successfully, invoke it 5 times synchronously by running:
 
