@@ -129,14 +129,23 @@ def handle(req):
 
 This function will just return a sequence of characters, so it's indeed an `echo` function. Any values returned to stdout will subsequently be returned to the calling program. Should you want to add more packages, update the `requirements.txt` file. On Kubernetes is possible to run any container image as an OpenFaaS function as long as your application exposes port 8080 and has a HTTP health check endpoint.
 
+### Building a function and understanding the watchdog
+
 In order to build the function, you might run:
 
 ```sh
 faas build -f ./myfunction.yml [--shrinkwrap]
 ```
-> **Note:** It is possible to understand how faas builds a function by exploring the build folder if you employ the `shrinkwrap` flag.
 
-To deploy it to Kubernetes you might run:
+It is possible to understand how faas builds a function by exploring the build folder if you employ the dry run `shrinkwrap` flag. This will not build the function, but instead put in the build folder all building blocks of your function, including the watchdog definition. The classic Watchdog forks one process per request giving the highest level of portability, but the newer version enables a http mode where that same process can be re-used repeatedly to offset the latency of forking. Below you can find a conceptual diagram of an invocation of the Watchdog:
+
+![alt text](https://raw.githubusercontent.com/neicnordic/serverless-workshop/master/exercise/watchdog.jpg)
+
+Read more about the Watchdog here: https://docs.openfaas.com/architecture/watchdog/
+
+### Deploying a function
+
+To deploy a function to Kubernetes you might run:
 
 ```sh
 faas deploy -f ./myfunction.yml
@@ -154,7 +163,7 @@ This is the standard way for interacting with functions. The function URL follow
 [https://gateway_URL:port/function/function_name]
 ```
 
-### Invoking functions asynchronously or synchronously?
+## Invoking functions asynchronously or synchronously?
 
 When you call a function synchronously a connection is made to the  OpenFaaS gateway and is held open for the whole execution time. Synchronous calls are *blocking* so your shell will pause and become inactive until the function has finished. 
 
@@ -198,7 +207,7 @@ What did you observe? The first example should have taken ~50 seconds whereas th
 kubectl logs deployment/queue-worker -n openfaas`
 ```
 
-### Autoscaling function-based workloads
+## Autoscaling function-based workloads
 
 Auto-scaling in OpenFaaS allows a function to scale up or down depending on demand represented by different metrics. Read a bit about how autoscaling works in the following page: https://docs.openfaas.com/architecture/autoscaling/.
 
