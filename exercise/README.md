@@ -220,7 +220,7 @@ Here we will show you how to trigger the autoscaling of functions by using the `
  load testing tool. Run the following command against your function and observe the number of replicas of your function in the Grafana dashboard. What happened?
  
  ```bash
- hey -z=40s -q 7 -c 2 -m POST -d=asdasd http://127.0.0.1:8080/function/myfunction
+ hey -z=40s -q 7 -c 2 -m POST -d=asdasd http://127.0.0.1:31112/function/myfunction
  ```
  The above simulates two active users `-c` at 5 requests per second `-q` over a duration `-z` of 40 seconds.
  
